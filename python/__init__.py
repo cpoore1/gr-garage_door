@@ -22,15 +22,16 @@
 This is the GNU Radio GARAGE_DOOR module. Place your Python package
 description here (python/__init__.py).
 '''
+from __future__ import unicode_literals
 
 # import swig generated symbols into the garage_door namespace
 try:
-	# this might fail if the module is python-only
-	from garage_door_swig import *
+    # this might fail if the module is python-only
+    from .garage_door_swig import *
 except ImportError:
-	pass
+    pass
 
 # import any pure python here
-from message_generator import message_generator
-from message_cycler import message_cycler
+from .message_cycler import message_cycler
+from .message_generator import message_generator
 #

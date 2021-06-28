@@ -22,9 +22,10 @@ FIND_LIBRARY(
           /usr/local/lib64
           /usr/lib
           /usr/lib64
-)
+          )
+
+include("${CMAKE_CURRENT_LIST_DIR}/garage_doorTarget.cmake")
 
 INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(GARAGE_DOOR DEFAULT_MSG GARAGE_DOOR_LIBRARIES GARAGE_DOOR_INCLUDE_DIRS)
 MARK_AS_ADVANCED(GARAGE_DOOR_LIBRARIES GARAGE_DOOR_INCLUDE_DIRS)
-
