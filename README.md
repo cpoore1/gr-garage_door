@@ -15,8 +15,8 @@ The Garage Door Cycle .grc will rapidly cycle through all the DIP switch positio
   - Bursts per DIP specifies the number of repeating messages in an interval
   - Burst interval is the time between two DIP values. The code needs to be updated to make the timing exact.
   
-[Garage Door Opener and Remote](examples/Garage_Door1.jpg)
+![Garage Door Opener and Remote](examples/Garage_Door1.jpg)
 
-[Single Message from Remote](Garage_Door_Time_Freq2.png)
+![Single Message from Remote](examples/Garage_Door_Time_Freq2.png)
 
-[Burst from Remote](Garage_Door_Time_Freq1.png)
+![Burst from Remote](examples/Garage_Door_Time_Freq1.png)
