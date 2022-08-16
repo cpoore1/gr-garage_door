@@ -2,6 +2,8 @@
 
 This GNU Radio out-of-tree module simulates signals for a Stanley ST500W (310 MHz, 10 DIP switch) garage door opener. This is an older model (pre-1982) and utilizes on-off keying (OOK) to repeat the same message for every button press. 
 
+This software has been integrated into [FISSURE: The RF Framework](https://github.com/ainfosec/FISSURE).
+
 # Examples
 
 The Garage Door Transmit .grc will simulate a button press and repeat indefinitely.
