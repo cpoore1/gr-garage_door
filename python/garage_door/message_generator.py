@@ -19,21 +19,22 @@
 # Boston, MA 02110-1301, USA.
 # 
 
-import numpy, scipy
+import numpy
 from gnuradio import gr
-import pmt
 import time
+
 
 class message_generator(gr.sync_block):
     """
     docstring for block message_generator
     """
-    def __init__(self,sample_rate,dip_positions,press_duration,press_repetition_interval):
+
+    def __init__(self, sample_rate, dip_positions, press_duration, press_repetition_interval):
         gr.sync_block.__init__(self,
-            name="message_generator",
-            in_sig=[numpy.complex64],
-            out_sig=[numpy.complex64])
-            
+                               name="message_generator",
+                               in_sig=[numpy.complex64],
+                               out_sig=[numpy.complex64])
+
         self.sample_rate = sample_rate
         self.dip_positions = dip_positions
         self.press_duration = press_duration
@@ -43,7 +44,7 @@ class message_generator(gr.sync_block):
         self.replay_index = 0
         self.press_repetition_interval = press_repetition_interval
         self.press_pri_timer = time.time()
-                
+
         # Expand Bits into Chips
         self.chips = ""
         for n in dip_positions:
@@ -51,63 +52,63 @@ class message_generator(gr.sync_block):
                 self.chips = self.chips + "1110"
             else:
                 self.chips = self.chips + "1000"
-                
+
         # Make Signal from Chips
-        self.replay_data = numpy.zeros(0,numpy.complex64)
+        self.replay_data = numpy.zeros(0, numpy.complex64)
         for n in self.chips:
             if n == "0":
-                self.replay_data = numpy.concatenate([self.replay_data, numpy.zeros(int(self.chip_duration*self.sample_rate),numpy.complex64)])
+                self.replay_data = numpy.concatenate(
+                    [self.replay_data, numpy.zeros(int(self.chip_duration * self.sample_rate), numpy.complex64)])
             else:
-                self.replay_data = numpy.concatenate([self.replay_data, numpy.ones(int(self.chip_duration*self.sample_rate),numpy.complex64)])
-                                
+                self.replay_data = numpy.concatenate(
+                    [self.replay_data, numpy.ones(int(self.chip_duration * self.sample_rate), numpy.complex64)])
+
         # Add Silence for Burst Interval
-        self.replay_data = numpy.concatenate([self.replay_data, numpy.zeros(int(self.burst_interval*self.sample_rate),numpy.complex64)])
+        self.replay_data = numpy.concatenate(
+            [self.replay_data, numpy.zeros(int(self.burst_interval * self.sample_rate), numpy.complex64)])
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
         out = output_items[0]
         input_len = len(input_items[0])
-                
+
         # Button Press
         if time.time() < self.press_timer + self.press_duration:
-            
+
             # Whole Window
             if self.replay_index + input_len < len(self.replay_data):
                 out[:] = self.replay_data[self.replay_index:self.replay_index + input_len]
                 self.replay_index = self.replay_index + input_len
-            
+
             # Partial Window
-            else:                   
+            else:
                 chunk1 = self.replay_data[self.replay_index:]
                 chunk2 = self.replay_data[0:self.replay_index + input_len - len(self.replay_data)]
                 out[:] = numpy.concatenate([chunk1, chunk2])
                 self.replay_index = self.replay_index + input_len - len(self.replay_data)
-                
+
         # Do Nothing
-        else:    
+        else:
             if self.replay_index != 0:
                 self.replay_index = 0
-            
+
             # Check Timer
             if time.time() > self.press_pri_timer + self.press_repetition_interval:
                 self.press_pri_timer = time.time()
                 self.press_timer = self.press_pri_timer
-                
+
             out[:] = in0
-        
+
         return len(output_items[0])
 
-
-    def set_sample_rate(self,sample_rate):
+    def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        
-    def set_dip_positions(self,dip_positions):
-        self.dip_positions = dip_positions
-        
-    def set_press_duration(self,press_duration):
-        self.press_duration = press_duration    
 
-    def set_press_repetition_interval(self,press_repetition_interval):
-        self.press_repetition_interval = press_repetition_interval            
-        
-                  
+    def set_dip_positions(self, dip_positions):
+        self.dip_positions = dip_positions
+
+    def set_press_duration(self, press_duration):
+        self.press_duration = press_duration
+
+    def set_press_repetition_interval(self, press_repetition_interval):
+        self.press_repetition_interval = press_repetition_interval
